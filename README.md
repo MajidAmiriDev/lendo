@@ -3,6 +3,8 @@
 3.	docker exec laravel-app php artisan test
 
 RESULT:
+
+
    PASS  Tests\Unit\ExampleTest
   ✓ that true is true
 
