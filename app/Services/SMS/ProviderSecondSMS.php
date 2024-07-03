@@ -9,7 +9,7 @@ class ProviderSecondSMS implements SMSDriverInterface
 {
     public function send($receptor, $message)
     {
-        $response = Http::post('https://api.providerSecond.com/send', [
+        $response = Http::post('https://google.com/send', [
             'username' => 'username',
             'password' => 'password',
             'receptor' => $receptor,
