@@ -22,8 +22,12 @@ class OrderController extends Controller
 
     public function store(OrderStoreRequest $request)
     {
-
         $customer = Customer::find($request->customer_id);
+
+        if(!$customer){
+            return response()->json(['error' => 'Customer not found.'], 404);   
+        }
+
 
         if (!$this->isCustomerEligible($customer)) {
             return response()->json(['error' => 'Customer is not eligible to place an order.'], 400);
@@ -38,6 +42,7 @@ class OrderController extends Controller
             'status' => $orderStatus,
         ]);
 
+
         if($order){
 
             $message = "Dear {$customer->name},\nYour order has been registered successfully.\nThank you.";
@@ -51,19 +56,18 @@ class OrderController extends Controller
             return response()->json(['error' => 'Failed to register order.'], 500);
 
         }
+
     }
 
 
-    public function isCustomerEligible(Customer $customer):bool
+    public function isCustomerEligible(Customer $customer): bool
     {
         return ($customer->status !== 'blocked' && $customer->complete_info);
     }
 
-    public function setOrderStatus(Customer $customer):string
+    public function setOrderStatus(Customer $customer): string
     {
         return $customer->bank_account_number ? 'CHECK_HAVING_ACCOUNT' : 'OPENING_BANK_ACCOUNT';
     }
-
-
 
 }

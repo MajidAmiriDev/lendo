@@ -3,15 +3,55 @@
 namespace Tests\Feature;
 
 use App\Jobs\SendOrderConfirmationSMS;
+use App\Http\Controllers\OrderController;
 use App\Models\Customer;
+use App\Services\SMSService;
 use App\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
+use Mockery;
+use Illuminate\Http\Response;
+use App\Http\Requests\OrderStoreRequest;
 
 class OrderTest extends TestCase
 {
     use RefreshDatabase;
+
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Queue::fake();
+    }
+
+
+
+    public function test_customer_not_found()
+    {
+        $smsService = Mockery::mock(SMSService::class);
+
+        $this->app->instance(SMSService::class, $smsService);
+
+        $request = [
+            'customer_id' => 999, 
+            'amount' => 10000000,
+            'invoice_count' => 6,
+        ];
+
+        $controller = new OrderController($smsService);
+
+        $response = $controller->store(new OrderStoreRequest($request));
+
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+
+        $this->assertJson($response->getContent());
+        $this->assertJsonStringEqualsJsonString(
+            json_encode(['error' => 'Customer not found.']),
+            $response->getContent()
+        );
+    }
+
 
     public function test_order_registration_success()
     {
@@ -66,5 +106,11 @@ class OrderTest extends TestCase
         $this->assertDatabaseMissing('orders', [
             'customer_id' => $customer->id,
         ]);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Mockery::close();
     }
 }
