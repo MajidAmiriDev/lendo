@@ -91,9 +91,5 @@ Thank you.
 <li class="has-line-data" data-line-start="49" data-line-end="50">Use the Laravel framework.</li>
 <li class="has-line-data" data-line-start="50" data-line-end="51">Writing test(unit/feature) is an advantage.</li>
 <li class="has-line-data" data-line-start="51" data-line-end="52">In tests, mock the thirty-party APIs.</li>
-<li class="has-line-data" data-line-start="52" data-line-end="53">You have 24/48H to do it</li>
-<li class="has-line-data" data-line-start="53" data-line-end="54">After finishing the task, please upload the code to your GitHub repository and send your repo to us.</li>
-<li class="has-line-data" data-line-start="54" data-line-end="56">If you have any questions, please feel free to ask via this email address: ‘<a href="https://s4.lendo.ir/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e984c78f869c85888d8e889ba9858c878d86c7809b">[email&nbsp;protected]</a>’</li>
 </ul>
 <p class="has-line-data" data-line-start="56" data-line-end="57">Thank you in advance for your valuable time.</p>
-<script data-cfasync="false" src="Application%20Overview.md(1)_files/email-decode.min.js"></script><iframe id="goftino_w" title="goftino_widget" allow="microphone" allowfullscreen="true" allowtransparency="true" scrolling="no" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;/html&gt;" style="left: 0px; bottom: 55px; right: auto; width: 80px; height: 80px;" class="goftino-wakeup"></iframe></body></html>
