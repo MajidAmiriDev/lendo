@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Services\SMSService;
 use Illuminate\Http\Request;
 use App\Http\Requests\OrderStoreRequest;
+use App\Jobs\SendOrderConfirmationSMS;
 
 
 class OrderController extends Controller
@@ -21,13 +22,11 @@ class OrderController extends Controller
     public function store(OrderStoreRequest $request)
     {
 
-
         $customer = Customer::find($request->customer_id);
 
         if (!$this->isCustomerEligible($customer)) {
             return response()->json(['error' => 'Customer is not eligible to place an order.'], 400);
         }
-
 
         $orderStatus = $this->setOrderStatus($customer);
 
@@ -38,10 +37,18 @@ class OrderController extends Controller
             'status' => $orderStatus,
         ]);
 
-        $message = "Dear {$customer->name},\nYour order has been registered successfully.\nThank you.";
-        $this->smsService->send($customer->mobile, $message);
+        if($order){
 
-        return response()->json(['message' => 'Order registered successfully.', 'order' => $order]);
+            $message = "Dear {$customer->name},\nYour order has been registered successfully.\nThank you.";
+            //$this->smsService->send($customer->mobile, $message);
+            SendOrderConfirmationSMS::dispatch($customer, $message)->onQueue('sms');
+            return response()->json(['message' => 'Order registered successfully.', 'order' => $order]);
+
+        }else{
+
+            return response()->json(['message' => 'Order failed.', 'order' => $order]);
+
+        }
     }
 
 
@@ -54,6 +61,7 @@ class OrderController extends Controller
     {
         return $customer->bank_account_number ? 'CHECK_HAVING_ACCOUNT' : 'OPENING_BANK_ACCOUNT';
     }
+
 
 
 }
