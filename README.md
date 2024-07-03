@@ -6,12 +6,15 @@ RESULT:
 
 
    PASS  Tests\Unit\ExampleTest
+
   ✓ that true is true
 
    PASS  Tests\Feature\ExampleTest
+
   ✓ the application returns a successful response                        0.10s  
 
    PASS  Tests\Feature\OrderTest
+   
   ✓ customer not found                                                   1.20s  
   ✓ order registration success                                           0.04s  
   ✓ order registration failure                                           0.02s  
