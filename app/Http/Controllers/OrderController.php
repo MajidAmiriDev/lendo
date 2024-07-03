@@ -10,16 +10,36 @@ use App\Http\Requests\OrderStoreRequest;
 use App\Jobs\SendOrderConfirmationSMS;
 use Illuminate\Support\Facades\Log;
 
-
+/**
+ * Class OrderController
+ * @package App\Http\Controllers
+ */
 class OrderController extends Controller
 {
+    /**
+     * @var SMSService
+     */    
     protected $smsService;
 
+
+
+    /**
+     * OrderController constructor.
+     * @param SMSService $smsService
+     */
     public function __construct(SMSService $smsService)
     {
         $this->smsService = $smsService;
     }
 
+
+
+    /**
+     * Store a newly created order in storage.
+     *
+     * @param OrderStoreRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(OrderStoreRequest $request)
     {
         $customer = Customer::find($request->customer_id);
@@ -44,7 +64,6 @@ class OrderController extends Controller
 
 
         if($order){
-
             $message = "Dear {$customer->name},\nYour order has been registered successfully.\nThank you.";
             //$this->smsService->send($customer->mobile, $message);
             SendOrderConfirmationSMS::dispatch($customer, $message)->onQueue('sms');
@@ -59,12 +78,25 @@ class OrderController extends Controller
 
     }
 
-
+    /**
+     * Check if the customer is eligible to place an order.
+     *
+     * @param Customer $customer
+     * @return bool
+     */
     public function isCustomerEligible(Customer $customer): bool
     {
         return ($customer->status !== 'blocked' && $customer->complete_info);
     }
 
+
+
+    /**
+     * Set the order status based on the customer's information.
+     *
+     * @param Customer $customer
+     * @return string
+     */
     public function setOrderStatus(Customer $customer): string
     {
         return $customer->bank_account_number ? 'CHECK_HAVING_ACCOUNT' : 'OPENING_BANK_ACCOUNT';

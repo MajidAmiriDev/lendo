@@ -27,6 +27,11 @@ class OrderTest extends TestCase
 
 
 
+    /**
+     * Test customer not found scenario.
+     *
+     * @return void
+     */
     public function test_customer_not_found()
     {
         $smsService = Mockery::mock(SMSService::class);
@@ -52,6 +57,13 @@ class OrderTest extends TestCase
         );
     }
 
+
+
+    /**
+     * Test order registration success.
+     *
+     * @return void
+     */
 
     public function test_order_registration_success()
     {
@@ -87,6 +99,13 @@ class OrderTest extends TestCase
 
     }
 
+
+
+    /**
+     * Test order registration failure due to ineligible customer.
+     *
+     * @return void
+     */
     public function test_order_registration_failure()
     {
         $customer = Customer::factory()->create([
