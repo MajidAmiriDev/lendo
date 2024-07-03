@@ -1,5 +1,4 @@
 
-<p class="has-line-data" data-line-start="2" data-line-end="3">In this code challenge you should implement a SMS driver and register order.</p>
 <h2 class="code-line" data-line-start="3" data-line-end="4"><a id="Implementing_SMS_drivers_3"></a>Implementing SMS drivers</h2>
 <p class="has-line-data" data-line-start="4" data-line-end="7">Suppose, we have 3 SMS provider based on restful API which if necessary, we should be able to switch between them.<br>
 You should call a thirty-party API for each driver and pass their relevant parameters.<br>
