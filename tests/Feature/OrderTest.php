@@ -16,7 +16,6 @@ class OrderTest extends TestCase
     public function test_order_registration_success()
     {
         Queue::fake(); 
-
         $customer = Customer::factory()->create([
             'bank_account_number' => '1234567890',
             'status' => 'normal',
@@ -44,6 +43,8 @@ class OrderTest extends TestCase
         Queue::assertPushed(SendOrderConfirmationSMS::class, function ($job) use ($customer) {
             return $job->customer->id === $customer->id;
         });
+
+
     }
 
     public function test_order_registration_failure()

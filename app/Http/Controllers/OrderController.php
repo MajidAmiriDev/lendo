@@ -8,6 +8,7 @@ use App\Services\SMSService;
 use Illuminate\Http\Request;
 use App\Http\Requests\OrderStoreRequest;
 use App\Jobs\SendOrderConfirmationSMS;
+use Illuminate\Support\Facades\Log;
 
 
 class OrderController extends Controller
@@ -42,11 +43,12 @@ class OrderController extends Controller
             $message = "Dear {$customer->name},\nYour order has been registered successfully.\nThank you.";
             //$this->smsService->send($customer->mobile, $message);
             SendOrderConfirmationSMS::dispatch($customer, $message)->onQueue('sms');
-            return response()->json(['message' => 'Order registered successfully.', 'order' => $order]);
+            Log::info('Order registered successfully.', ['order_id' => $order->id, 'customer_id' => $customer->id]);
+            return response()->json(['message' => 'Order registered successfully.', 'order' => $order],200);
 
         }else{
-
-            return response()->json(['message' => 'Order failed.', 'order' => $order]);
+            Log::error('Error registering order.', ['exception' => $e->getMessage()]);
+            return response()->json(['error' => 'Failed to register order.'], 500);
 
         }
     }
