@@ -6,6 +6,8 @@ use App\Models\Order;
 use App\Models\Customer;
 use App\Services\SMSService;
 use Illuminate\Http\Request;
+use App\Http\Requests\OrderStoreRequest;
+
 
 class OrderController extends Controller
 {
@@ -16,22 +18,18 @@ class OrderController extends Controller
         $this->smsService = $smsService;
     }
 
-    public function store(Request $request)
+    public function store(OrderStoreRequest $request)
     {
 
-        $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'amount' => 'required|in:10000000,12000000,15000000,20000000',
-            'invoice_count' => 'required|in:6,9,12',
-        ]);
 
         $customer = Customer::find($request->customer_id);
 
-        if ($customer->status == 'blocked' || !$customer->complete_info) {
+        if (!$this->isCustomerEligible($customer)) {
             return response()->json(['error' => 'Customer is not eligible to place an order.'], 400);
         }
 
-        $orderStatus = $customer->bank_account_number ? 'CHECK_HAVING_ACCOUNT' : 'OPENING_BANK_ACCOUNT';
+
+        $orderStatus = $this->setOrderStatus($customer);
 
         $order = Order::create([
             'customer_id' => $customer->id,
@@ -45,4 +43,17 @@ class OrderController extends Controller
 
         return response()->json(['message' => 'Order registered successfully.', 'order' => $order]);
     }
+
+
+    public function isCustomerEligible(Customer $customer):bool
+    {
+        return ($customer->status !== 'blocked' && $customer->complete_info);
+    }
+
+    public function setOrderStatus(Customer $customer):string
+    {
+        return $customer->bank_account_number ? 'CHECK_HAVING_ACCOUNT' : 'OPENING_BANK_ACCOUNT';
+    }
+
+
 }
